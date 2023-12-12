@@ -1,0 +1,15 @@
+C:\Users\Knar\source\repos\ChessKnight\bin\Debug\net7.0\ChessKnight.exe
+C:\Users\Knar\source\repos\ChessKnight\bin\Debug\net7.0\ChessKnight.deps.json
+C:\Users\Knar\source\repos\ChessKnight\bin\Debug\net7.0\ChessKnight.runtimeconfig.json
+C:\Users\Knar\source\repos\ChessKnight\bin\Debug\net7.0\ChessKnight.dll
+C:\Users\Knar\source\repos\ChessKnight\bin\Debug\net7.0\ChessKnight.pdb
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ChessKnight.csproj.AssemblyReference.cache
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ChessKnight.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ChessKnight.AssemblyInfoInputs.cache
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ChessKnight.AssemblyInfo.cs
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ChessKnight.csproj.CoreCompileInputs.cache
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ChessKnight.dll
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\refint\ChessKnight.dll
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ChessKnight.pdb
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ChessKnight.genruntimeconfig.cache
+C:\Users\Knar\source\repos\ChessKnight\obj\Debug\net7.0\ref\ChessKnight.dll
