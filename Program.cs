@@ -1,11 +1,8 @@
 ﻿using System;
-
-struct Coordinates
-{
-    public int Row 
-    public int Column 
-}
-
+using System.Transactions;
+using ChessKnight.Structures;
+using ChessKnight;
+using ChessKnight.Enums;
 class ChessBoardPrinter
 {
     static char[,] chessboard = new char[8, 8];
@@ -22,32 +19,42 @@ class ChessBoardPrinter
         if (IsValidInput(userInput))
         {
             Console.WriteLine("Enter the chess piece (K, Q, R, B, N): ");
-            char symbol = char.ToUpper(Console.ReadLine()[0]);
-
-            PlaceSymbolOnBoard(userInput, symbol);
-
-            Console.WriteLine("\nChessboard after placing symbol:");
-            PrintChessBoard();
-
-            Console.WriteLine("Enter the new position (e.g., C7): ");
-            string newPosition = Console.ReadLine();
-
-            if (IsValidInput(newPosition))
+            Figure symbol;
+            if (Enum.TryParse(Console.ReadLine(), out symbol)) ;
             {
-                if (IsValidMove(userInput, newPosition, symbol))
+
+                PlaceSymbolOnBoard(userInput, symbol);
+
+                Console.WriteLine("\nChessboard after placing symbol:");
+                PrintChessBoard();
+
+                Console.WriteLine("Enter the new position (e.g., C7): ");
+                string newPosition = Console.ReadLine();
+                static void MovePiece(string currentPosition, string newPosition)
                 {
-                    MovePiece(userInput, newPosition);
-                    Console.WriteLine($"\nChessboard after moving the {symbol}:");
-                    PrintChessBoard();
+                    Coordinates currentCoords = ConvertInputToCoordinates(currentPosition);
+                    Coordinates newCoords = ConvertInputToCoordinates(newPosition);
+
+                    chessboard[newCoords.Row, newCoords.Column] = chessboard[currentCoords.Row, currentCoords.Column];
+                    chessboard[currentCoords.Row, currentCoords.Column] = ' ';
+                }
+                if (IsValidInput(newPosition))
+                {
+                    if (IsValidMove(userInput, newPosition, symbol))
+                    {
+                        MovePiece(userInput, newPosition);
+                        Console.WriteLine($"\nChessboard after moving the {symbol}:");
+                        PrintChessBoard();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid {symbol} move. Please enter a valid move for the {symbol}.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid {symbol} move. Please enter a valid move for the {symbol}.");
+                    Console.WriteLine("Invalid input for the new position. Please enter a valid position (e.g., C7).");
                 }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input for the new position. Please enter a valid position (e.g., C7).");
             }
         }
         else
@@ -74,7 +81,7 @@ class ChessBoardPrinter
 
         for (int i = 0; i < chessboard.GetLength(0); i++)
         {
-            Console.Write(i + 1); 
+            Console.Write(i + 1);
 
             for (int j = 0; j < chessboard.GetLength(1); j++)
             {
@@ -82,7 +89,7 @@ class ChessBoardPrinter
                 Console.Write(chessboard[i, j] + " ");
             }
 
-            Console.BackgroundColor = originalConsoleColor; 
+            Console.BackgroundColor = originalConsoleColor;
 
             Console.WriteLine();
         }
@@ -103,53 +110,6 @@ class ChessBoardPrinter
 
         return false;
     }
-
-    static void PlaceSymbolOnBoard(string position, char symbol)
-    {
-        Coordinates coordinates = ConvertInputToCoordinates(position);
-
-        if (coordinates.Row >= 0 && coordinates.Row < chessboard.GetLength(0) &&
-            coordinates.Column >= 0 && coordinates.Column < chessboard.GetLength(1))
-        {
-            chessboard[coordinates.Row, coordinates.Column] = symbol;
-        }
-        else
-        {
-            Console.WriteLine($"Invalid position. {symbol} not placed on the board.");
-        }
-    }
-
-    static bool IsValidMove(string currentPosition, string newPosition, char symbol)
-    {
-        Coordinates currentCoords = ConvertInputToCoordinates(currentPosition);
-        Coordinates newCoords = ConvertInputToCoordinates(newPosition);
-
-        switch (symbol)
-        {
-            case 'K':
-                return IsValidKingMove(currentCoords, newCoords);
-            case 'Q':
-                return IsValidQueenMove(currentCoords, newCoords);
-            case 'R':
-                return IsValidRookMove(currentCoords, newCoords);
-            case 'B':
-                return IsValidBishopMove(currentCoords, newCoords);
-            case 'N':
-                return IsValidKnightMove(currentCoords, newCoords);
-            default:
-                return false;
-        }
-    }
-
-    static void MovePiece(string currentPosition, string newPosition)
-    {
-        Coordinates currentCoords = ConvertInputToCoordinates(currentPosition);
-        Coordinates newCoords = ConvertInputToCoordinates(newPosition);
-
-        chessboard[newCoords.Row, newCoords.Column] = chessboard[currentCoords.Row, currentCoords.Column];
-        chessboard[currentCoords.Row, currentCoords.Column] = ' ';
-    }
-
     static Coordinates ConvertInputToCoordinates(string input)
     {
         return new Coordinates
@@ -158,40 +118,65 @@ class ChessBoardPrinter
             Row = int.Parse(input[1].ToString()) - 1
         };
     }
-
-    static bool IsValidKingMove(Coordinates current, Coordinates target)
+    static void PlaceSymbolOnBoard(string position, Figure symbol)
     {
-        
-        int rowDifference = Math.Abs(target.Row - current.Row);
-        int colDifference = Math.Abs(target.Column - current.Column);
+        Coordinates coordinates = ConvertInputToCoordinates(position);
 
-        return (rowDifference <= 1 && colDifference <= 1);
+        if (coordinates.Row >= 0 && coordinates.Row < chessboard.GetLength(0) &&
+            coordinates.Column >= 0 && coordinates.Column < chessboard.GetLength(1))
+        {
+            chessboard[coordinates.Row, coordinates.Column] = (char)symbol;
+        }
+        else
+        {
+            Console.WriteLine($"Invalid position. {symbol} not placed on the board.");
+        }
     }
 
-    static bool IsValidQueenMove(Coordinates current, Coordinates target)
+    static bool IsValidMove(string currentPosition, string newPosition, Figure symbol)
     {
-        return current.Row == target.Row || current.Column == target.Column ||
-               Math.Abs(target.Row - current.Row) == Math.Abs(target.Column - current.Column);
-    }
+        Coordinates currentCoords = ConvertInputToCoordinates(currentPosition);
+        Coordinates newCoords = ConvertInputToCoordinates(newPosition);
 
-    static bool IsValidRookMove(Coordinates current, Coordinates target)
-    {
-       
-        return current.Row == target.Row || current.Column == target.Column;
-    }
+        switch (symbol)
+        {
+            case Figure.King:
+                King king = new King();
+                return king.IsValidMove(currentCoords, newCoords);
+            case Figure.Queen:
+                Queen queen = new Queen();
+                return queen.IsValidMove(currentCoords, newCoords);
+            case Figure.Rook:
+                Rook rook = new Rook();
+                return rook.IsValidMove(currentCoords, newCoords);
+            case Figure.Bishop:
+                Bishop bishop = new Bishop();
+                return bishop.IsValidMove(currentCoords, newCoords);
+            case Figure.Knight:
+                Knight knight = new Knight();
+                return knight.IsValidMove(currentCoords, newCoords);
+            default:
+                return false;
+        }
 
-    static bool IsValidBishopMove(Coordinates current, Coordinates target)
-    {
-        
-        return Math.Abs(target.Row - current.Row) == Math.Abs(target.Column - current.Column);
-    }
+        static void MovePiece(string currentPosition, string newPosition)
+        {
+            Coordinates currentCoords = ConvertInputToCoordinates(currentPosition);
+            Coordinates newCoords = ConvertInputToCoordinates(newPosition);
 
-    static bool IsValidKnightMove(Coordinates current, Coordinates target)
-    {
-  
-        int rowDifference = Math.Abs(target.Row - current.Row);
-        int colDifference = Math.Abs(target.Column - current.Column);
+            chessboard[newCoords.Row, newCoords.Column] = chessboard[currentCoords.Row, currentCoords.Column];
+            chessboard[currentCoords.Row, currentCoords.Column] = ' ';
+        }
 
-        return (rowDifference == 2 && colDifference == 1) || (rowDifference == 1 && colDifference == 2);
+        static Coordinates ConvertInputToCoordinates(string input)
+        {
+            return new Coordinates
+            {
+                Column = input[0] - 'A',
+                Row = int.Parse(input[1].ToString()) - 1
+            };
+        }
     }
 }
+
+    
