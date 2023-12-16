@@ -1,6 +1,6 @@
 ﻿using ChessKnight.Structures;
 using System;
-using ChessKnight.Figures;
+using ChessKnight.Enums;
 
 namespace ChessKnight
 {
