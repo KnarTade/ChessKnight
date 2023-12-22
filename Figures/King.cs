@@ -1,13 +1,16 @@
 ﻿using ChessKnight.Structures;
-using System;
-using ChessKnight.Enums;
 
 namespace ChessKnight
 {
-    public   class King : BaseClass
-    {
+    public  class King 
+    {/// <summary>
+    /// Checking is valid move for King
+    /// </summary>
+    /// <param name="current"></param>
+    /// <param name="target"></param>
+    /// <returns></returns>
 
-        public override bool IsValidMove(Coordinates current, Coordinates target)
+        public  bool IsValidMove(Coordinates current, Coordinates target)
         {
             int rowDifference = Math.Abs(target.Row - current.Row);
             int colDifference = Math.Abs(target.Column - current.Column);

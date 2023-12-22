@@ -1,34 +1,30 @@
-﻿using System;
+﻿
 using ChessKnight;
 using ChessKnight.Enums;
 using ChessKnight.Structures;
 
+
 class ChessBoardPrinter
 {
-    private static char[,] chessboard = new char[8, 8];
-    private static ConsoleColor originalConsoleColor = Console.BackgroundColor;
-
+    //private static char[,] chessboard = new char[8, 8];
+    //private static ConsoleColor originalConsoleColor = Console.BackgroundColor;
     static void Main()
     {
-        InitializeChessboard();
-        PrintChessBoard();
-
-        Console.WriteLine("Enter the initial position (e.g., A6): ");
+        char[,] chessboard = InitializeChessboard();
+        PrintChessBoard(chessboard);
+        Console.WriteLine("Enter the initial destinationCoord (e.g., A6): ");
         string userInput = Console.ReadLine();
-
         if (IsValidInput(userInput))
         {
             Console.WriteLine("Enter the chess piece (K, Q, R, B, N): ");
-            if (!Enum.TryParse(Console.ReadLine(), out Figure symbol))
+            string inputSymbol = Console.ReadLine()?.ToUpper(); 
+            if (IsValidSymbol(inputSymbol, out Figure symbol))
             {
                 PlaceSymbolOnBoard(userInput, symbol);
-
                 Console.WriteLine("\nChessboard after placing symbol:");
                 PrintChessBoard();
-
-                Console.WriteLine("Enter the new position (e.g., C7): ");
+                Console.WriteLine("Enter the new destinationCoord (e.g., C7): ");
                 string newPosition = Console.ReadLine();
-
                 if (IsValidInput(newPosition))
                 {
                     if (IsValidMove(userInput, newPosition))
@@ -44,7 +40,7 @@ class ChessBoardPrinter
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input for the new position. Please enter a valid position (e.g., C7).");
+                    Console.WriteLine("Invalid input for the new destinationCoord. Please enter a valid destinationCoord (e.g., C7).");
                 }
             }
             else
@@ -54,12 +50,12 @@ class ChessBoardPrinter
         }
         else
         {
-            Console.WriteLine("Invalid input for the initial position. Please enter a valid position (e.g., A6).");
+            Console.WriteLine("Invalid input for the initial destinationCoord. Please enter a valid destinationCoord (e.g., A6).");
         }
     }
-
-    private static void InitializeChessboard()
+    private static char[ ,] InitializeChessboard()
     {
+          char[,] chessboard = new char[8, 8];
         for (int i = 0; i < chessboard.GetLength(0); i++)
         {
             for (int j = 0; j < chessboard.GetLength(1); j++)
@@ -67,46 +63,39 @@ class ChessBoardPrinter
                 chessboard[i, j] = ' ';
             }
         }
+        return chessboard;
     }
-
-    private static void PrintChessBoard()
+    private static void PrintChessBoard(char[,]chessboard)
     {
         Console.Write("  A B C D E F G H");
         Console.WriteLine();
-
+        ConsoleColor originalConsoleColor = Console.BackgroundColor;
         for (int i = 0; i < chessboard.GetLength(0); i++)
         {
             Console.Write(i + 1);
-
             for (int j = 0; j < chessboard.GetLength(1); j++)
             {
                 Console.BackgroundColor = (i + j) % 2 == 0 ? ConsoleColor.DarkGray : ConsoleColor.White;
                 Console.Write(chessboard[i, j] + " ");
             }
-
             Console.BackgroundColor = originalConsoleColor;
-
             Console.WriteLine();
         }
     }
-
     private static bool IsValidInput(string input)
     {
         if (input.Length == 2)
-        {
+        {// cor objectov anel
             char firstChar = input[0];
             char secondChar = input[1];
-
             bool isFirstCharValid = char.IsLetter(firstChar) && (firstChar >= 'A' && firstChar <= 'H');
             bool isSecondCharValid = char.IsDigit(secondChar) && (secondChar >= '1' && secondChar <= '8');
-
             return isFirstCharValid && isSecondCharValid;
         }
-
         return false;
     }
-
     private static Coordinates ConvertInputToCoordinates(string input)
+        //tanel struct ctor
     {
         return new Coordinates
         {
@@ -114,21 +103,19 @@ class ChessBoardPrinter
             Row = int.Parse(input[1].ToString()) - 1
         };
     }
-
-    private static void PlaceSymbolOnBoard(string position, Figure symbol)
+    //stiringi texy corrd liner
+    private static void PlaceSymbolOnBoard(string destinationCoord, Figure symbol)
     {
-        Coordinates coordinates = ConvertInputToCoordinates(position);
-
+        Coordinates coordinates = ConvertInputToCoordinates(destinationCoord);
         if (IsValidCoordinates(coordinates))
         {
             chessboard[coordinates.Row, coordinates.Column] = GetSymbolChar(symbol);
         }
         else
         {
-            Console.WriteLine($"Invalid position. {symbol} not placed on the board.");
+            Console.WriteLine($"Invalid destinationCoord. {symbol} not placed on the board.");
         }
     }
-
     private static char GetSymbolChar(Figure symbol)
     {
         switch (symbol)
@@ -147,22 +134,18 @@ class ChessBoardPrinter
                 throw new ArgumentOutOfRangeException(nameof(symbol), symbol, null);
         }
     }
-
     private static bool IsValidCoordinates(Coordinates coordinates)
     {
         return coordinates.Row >= 0 && coordinates.Row < chessboard.GetLength(0) &&
                coordinates.Column >= 0 && coordinates.Column < chessboard.GetLength(1);
     }
-
     private static bool IsValidMove(string currentPosition, string newPosition)
     {
         Coordinates currentCoords = ConvertInputToCoordinates(currentPosition);
         Coordinates newCoords = ConvertInputToCoordinates(newPosition);
-
         char currentSymbol = chessboard[currentCoords.Row, currentCoords.Column];
-
         switch (currentSymbol)
-        {
+        {//new to destin
             case 'K':
                 return new King().IsValidMove(currentCoords, newCoords);
             case 'Q':
@@ -177,13 +160,41 @@ class ChessBoardPrinter
                 return false;
         }
     }
-
     private static void MovePiece(string currentPosition, string newPosition)
-    {
+    {//piece to figure
         Coordinates currentCoords = ConvertInputToCoordinates(currentPosition);
         Coordinates newCoords = ConvertInputToCoordinates(newPosition);
-
         chessboard[newCoords.Row, newCoords.Column] = chessboard[currentCoords.Row, currentCoords.Column];
         chessboard[currentCoords.Row, currentCoords.Column] = ' ';
+    }//hanel mainic,add comments,
+
+    private static bool IsValidSymbol(string inputSymbol, out Figure symbol)
+    {
+        switch (inputSymbol)
+        {
+            case "K":
+                symbol = Figure.King;
+                return true;
+            case "Q":
+                symbol = Figure.Queen;
+                return true;
+            case "R":
+                symbol = Figure.Rook;
+                return true;
+            case "B":
+                symbol = Figure.Bishop;
+                return true;
+            case "N":
+                symbol = Figure.Knight;
+                return true;
+            default:
+                symbol = default(Figure);
+                return false;
+        }
     }
 }
+
+
+
+
+
