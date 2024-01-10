@@ -1,8 +1,17 @@
-﻿namespace ChessKnight.Enums;
+﻿namespace ChessKnight;
 
 public enum Figure
-{   King,
+{
+    King,
     Queen,
     Bishop,
-    Rook, 
-    Knight }
+    Rook,
+    Knight
+}
+
+public enum FigureColor
+{
+    White,
+    Black
+}
+

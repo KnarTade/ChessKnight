@@ -1,8 +1,7 @@
-﻿using ChessKnight.Structures;
+﻿namespace ChessKnight;
 
 
-namespace ChessKnight
-{
+
     public  class Bishop 
     {/// <summary>
     /// Checking is valid move for Bishop 
@@ -16,4 +15,4 @@ namespace ChessKnight
             return Math.Abs(target.Row - current.Row) == Math.Abs(target.Column - current.Column);
         }
     }
-}
+

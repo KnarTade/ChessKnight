@@ -1,8 +1,8 @@
-﻿using ChessKnight.Structures;
+﻿namespace ChessKnight;
 
 
-namespace ChessKnight
-{
+
+
     public class Knight 
     {/// <summary>
      /// Checking is valid move for Knight
@@ -19,4 +19,4 @@ namespace ChessKnight
             return (rowDifference == 2 && colDifference == 1) || (rowDifference == 1 && colDifference == 2);
         }
     }
-}
+
